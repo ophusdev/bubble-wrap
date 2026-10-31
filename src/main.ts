@@ -1,4 +1,5 @@
 import { COLS, freshGame, isFinished, nextSheet, pop, ROWS, randomIntact, TOTAL } from "./game";
+import { loadSound, playPop, resumeSound } from "./sound";
 
 const NEW_SHEET_DELAY_MS = 600;
 
@@ -61,6 +62,7 @@ function popBubble(i: number) {
   if (!popped) return;
   game = popped;
   bubbles[i]?.classList.add("popped");
+  playPop();
   showCounters();
   if (isFinished(game)) window.setTimeout(dealNextSheet, NEW_SHEET_DELAY_MS);
 }
@@ -73,7 +75,10 @@ window.addEventListener("keydown", (e) => {
   if (bubble !== null) popBubble(bubble);
 });
 
+window.addEventListener("pointerup", resumeSound);
+
 document.documentElement.style.setProperty("--cols", String(COLS));
 document.documentElement.style.setProperty("--rows", String(ROWS));
 buildSheet();
 showCounters();
+void loadSound();
