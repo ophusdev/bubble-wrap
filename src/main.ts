@@ -21,6 +21,9 @@ const ui = {
   sheet: element("sheet"),
   mute: element("mute"),
   muteLabel: element("mute-label"),
+  reset: element("reset"),
+  resetDialog: required(document.querySelector("dialog"), "dialog"),
+  confirmReset: element("confirm-reset"),
 };
 
 const count = new Intl.NumberFormat("en");
@@ -28,6 +31,7 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let game = freshGame();
 let muted = false;
+let pendingSheet = 0;
 
 const bubbles = Array.from({ length: TOTAL }, (_, i) => {
   const bubble = document.createElement("div");
@@ -53,11 +57,21 @@ function showCounters() {
   document.title = `${count.format(game.pops)} popped · Bubble Wrap`;
 }
 
-function dealNextSheet() {
-  game = nextSheet(game);
+function showFreshSheet() {
   for (const bubble of bubbles) bubble.classList.remove("popped");
   if (!reducedMotion.matches) ui.sheet.animate(SLIDE_IN, { duration: 350, easing: "ease-out" });
   showCounters();
+}
+
+function dealNextSheet() {
+  game = nextSheet(game);
+  showFreshSheet();
+}
+
+function resetStats() {
+  window.clearTimeout(pendingSheet);
+  game = freshGame();
+  showFreshSheet();
 }
 
 function popBubble(i: number) {
@@ -67,11 +81,16 @@ function popBubble(i: number) {
   bubbles[i]?.classList.add("popped");
   if (!muted) playPop();
   showCounters();
-  if (isFinished(game)) window.setTimeout(dealNextSheet, NEW_SHEET_DELAY_MS);
+  if (isFinished(game)) pendingSheet = window.setTimeout(dealNextSheet, NEW_SHEET_DELAY_MS);
 }
 
+// Space always pops, even with focus on a button: closing the dialog puts focus
+// back on Reset, and Space must not open it again. Inside the dialog it's left
+// to the dialog's buttons.
+const isPopKey = (e: KeyboardEvent) => e.code === "Space" && !ui.resetDialog.open;
+
 window.addEventListener("keydown", (e) => {
-  if (e.code !== "Space") return;
+  if (!isPopKey(e)) return;
   e.preventDefault();
   if (e.repeat) return;
   const bubble = randomIntact(game, Math.random);
@@ -80,7 +99,7 @@ window.addEventListener("keydown", (e) => {
 
 // buttons fire on keyup for Space
 window.addEventListener("keyup", (e) => {
-  if (e.code === "Space") e.preventDefault();
+  if (isPopKey(e)) e.preventDefault();
 });
 
 window.addEventListener("pointerup", resumeSound);
@@ -89,6 +108,12 @@ ui.mute.addEventListener("click", () => {
   muted = !muted;
   ui.mute.dataset.muted = String(muted);
   ui.muteLabel.textContent = muted ? "Sound off" : "Sound on";
+});
+
+ui.reset.addEventListener("click", () => ui.resetDialog.showModal());
+
+ui.resetDialog.addEventListener("submit", (e) => {
+  if (e.submitter === ui.confirmReset) resetStats();
 });
 
 document.documentElement.style.setProperty("--cols", String(COLS));

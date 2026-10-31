@@ -11,14 +11,17 @@
   <body>
     <header>
       <h1>Bubble Wrap</h1>
-      <button type="button" id="mute">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 9h4l5-4v14l-5-4H4z" />
-          <path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
-          <path class="slash" d="M16 9l6 6M22 9l-6 6" />
-        </svg>
-        <span id="mute-label">Sound on</span>
-      </button>
+      <div class="header-actions">
+        <button type="button" id="mute">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9h4l5-4v14l-5-4H4z" />
+            <path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
+            <path class="slash" d="M16 9l6 6M22 9l-6 6" />
+          </svg>
+          <span id="mute-label">Sound on</span>
+        </button>
+        <button type="button" id="reset">Reset stats</button>
+      </div>
     </header>
     <main>
       <p class="counters">
@@ -31,6 +34,16 @@
         <span class="hint-desktop">Click a bubble or press <kbd>Space</kbd></span>
       </p>
     </main>
+    <dialog aria-labelledby="reset-title">
+      <form method="dialog">
+        <h2 id="reset-title">Reset stats?</h2>
+        <p>The popped count and the sheet number start over, on a fresh sheet. There is no undo.</p>
+        <div class="actions">
+          <button type="submit" autofocus>Keep them</button>
+          <button type="submit" id="confirm-reset" class="danger">Reset</button>
+        </div>
+      </form>
+    </dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -33,11 +33,13 @@ body {
   -webkit-touch-callout: none;
 }
 
+/* on narrow screens the buttons drop below the title */
 header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem 1rem;
   padding: 0.75rem max(1.25rem, env(safe-area-inset-right)) 0.75rem
     max(1.25rem, env(safe-area-inset-left));
   padding-top: max(0.75rem, env(safe-area-inset-top));
@@ -47,7 +49,13 @@ header {
 
 h1 {
   margin: 0;
+  white-space: nowrap;
   font-size: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 button {
@@ -96,6 +104,13 @@ button:focus-visible {
 #mute[data-muted="true"] {
   border-color: var(--bad);
   color: var(--bad);
+}
+
+button.danger {
+  border-color: var(--bad);
+  background: var(--bad);
+  color: var(--bg);
+  font-weight: 600;
 }
 
 main {
@@ -149,6 +164,36 @@ kbd {
   border-bottom-width: 2px;
   border-radius: 0.25rem;
   font: inherit;
+}
+
+dialog {
+  max-width: min(24rem, calc(100% - 2rem));
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.625rem;
+  background: var(--panel);
+  color: var(--text);
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+dialog h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+}
+
+dialog p {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 #sheet {
