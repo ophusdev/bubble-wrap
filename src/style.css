@@ -5,6 +5,8 @@
   --line: #343844;
   --text: #e6e8ee;
   --muted: #8b90a0;
+  --ok: #6cc28b;
+  --bad: #e06c6c;
   /* 13.5rem leaves room for the header, the counters, the hint and the sheet's own padding */
   --size: min(3.75rem, (100vw - 4rem) / (var(--cols) + 0.5), (100dvh - 13.5rem) / var(--rows));
 }
@@ -32,6 +34,10 @@ body {
 }
 
 header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
   padding: 0.75rem max(1.25rem, env(safe-area-inset-right)) 0.75rem
     max(1.25rem, env(safe-area-inset-left));
   padding-top: max(0.75rem, env(safe-area-inset-top));
@@ -42,6 +48,54 @@ header {
 h1 {
   margin: 0;
   font-size: 1rem;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.375rem;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--muted);
+  color: var(--text);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--ok);
+  outline-offset: 2px;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#mute .slash,
+#mute[data-muted="true"] .waves {
+  display: none;
+}
+
+#mute[data-muted="true"] .slash {
+  display: inline;
+}
+
+#mute[data-muted="true"] {
+  border-color: var(--bad);
+  color: var(--bad);
 }
 
 main {

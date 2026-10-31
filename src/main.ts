@@ -19,12 +19,15 @@ const ui = {
   pops: element("pops"),
   sheetNo: element("sheet-no"),
   sheet: element("sheet"),
+  mute: element("mute"),
+  muteLabel: element("mute-label"),
 };
 
 const count = new Intl.NumberFormat("en");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let game = freshGame();
+let muted = false;
 
 const bubbles = Array.from({ length: TOTAL }, (_, i) => {
   const bubble = document.createElement("div");
@@ -62,7 +65,7 @@ function popBubble(i: number) {
   if (!popped) return;
   game = popped;
   bubbles[i]?.classList.add("popped");
-  playPop();
+  if (!muted) playPop();
   showCounters();
   if (isFinished(game)) window.setTimeout(dealNextSheet, NEW_SHEET_DELAY_MS);
 }
@@ -75,7 +78,18 @@ window.addEventListener("keydown", (e) => {
   if (bubble !== null) popBubble(bubble);
 });
 
+// buttons fire on keyup for Space
+window.addEventListener("keyup", (e) => {
+  if (e.code === "Space") e.preventDefault();
+});
+
 window.addEventListener("pointerup", resumeSound);
+
+ui.mute.addEventListener("click", () => {
+  muted = !muted;
+  ui.mute.dataset.muted = String(muted);
+  ui.muteLabel.textContent = muted ? "Sound off" : "Sound on";
+});
 
 document.documentElement.style.setProperty("--cols", String(COLS));
 document.documentElement.style.setProperty("--rows", String(ROWS));
