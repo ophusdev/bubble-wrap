@@ -1,6 +1,8 @@
 const POP_FILES = 8;
+const MIN_GAP_SECONDS = 0.015;
 
 let pops: AudioBuffer[] = [];
+let nextStart = 0;
 
 // Created on the first pop: browsers only allow audio after a user gesture.
 let audio: AudioContext | null = null;
@@ -28,7 +30,10 @@ export function playPop() {
   });
   const gain = new GainNode(audio, { gain: 0.7 + Math.random() * 0.3 });
   source.connect(gain).connect(audio.destination);
-  source.start();
+  // a fast drag pops several bubbles at once: spread them out, or they add up to one loud click
+  const start = Math.max(audio.currentTime, nextStart);
+  nextStart = start + MIN_GAP_SECONDS;
+  source.start(start);
 }
 
 // A touchscreen press doesn't count as a gesture, lifting the finger does.

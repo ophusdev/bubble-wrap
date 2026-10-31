@@ -1,7 +1,10 @@
+import { type Point, pointsAlong } from "./drag";
 import { COLS, freshGame, isFinished, nextSheet, pop, ROWS, randomIntact, TOTAL } from "./game";
 import { loadSound, playPop, resumeSound } from "./sound";
 
 const NEW_SHEET_DELAY_MS = 600;
+const DRAG_STEP_PX = 8; // well under the smallest bubble
+const LEFT_BUTTON_HELD = 1; // bit in PointerEvent.buttons
 
 const SLIDE_IN: Keyframe[] = [
   { opacity: 0, transform: "translateY(30px)" },
@@ -32,6 +35,7 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let game = freshGame();
 let muted = false;
 let pendingSheet = 0;
+let dragFrom: Point | null = null;
 
 const bubbles = Array.from({ length: TOTAL }, (_, i) => {
   const bubble = document.createElement("div");
@@ -83,6 +87,27 @@ function popBubble(i: number) {
   showCounters();
   if (isFinished(game)) pendingSheet = window.setTimeout(dealNextSheet, NEW_SHEET_DELAY_MS);
 }
+
+function popAt({ x, y }: Point) {
+  const hit = document.elementFromPoint(x, y)?.closest<HTMLDivElement>(".bubble");
+  if (hit) popBubble(bubbles.indexOf(hit));
+}
+
+window.addEventListener("pointerdown", (e) => {
+  if (e.pointerType === "mouse" && e.button === 0) dragFrom = { x: e.clientX, y: e.clientY };
+});
+
+// On the window, so leaving the sheet and coming back doesn't draw a line across it.
+// Asking the event whether the button is held means a missed release can't get stuck.
+window.addEventListener("pointermove", (e) => {
+  if (e.pointerType !== "mouse" || !(e.buttons & LEFT_BUTTON_HELD)) {
+    dragFrom = null;
+    return;
+  }
+  const to = { x: e.clientX, y: e.clientY };
+  for (const point of pointsAlong(dragFrom ?? to, to, DRAG_STEP_PX)) popAt(point);
+  dragFrom = to;
+});
 
 // Space always pops, even with focus on a button: closing the dialog puts focus
 // back on Reset, and Space must not open it again. Inside the dialog it's left
