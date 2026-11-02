@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <title>Bubble Wrap</title>
+  <defs>
+    <radialGradient id="bubble">
+      <stop offset="0" stop-color="#5a6675" />
+      <stop offset="0.68" stop-color="#6f7f92" />
+      <stop offset="1" stop-color="#a9bdd2" />
+    </radialGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#14161b" />
+  <circle cx="16" cy="16" r="12.5" fill="url(#bubble)" />
+  <circle cx="11.5" cy="10.5" r="3.25" fill="#fff" />
+</svg>
