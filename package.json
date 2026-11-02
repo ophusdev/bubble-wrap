@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "A sheet of bubble wrap for short breaks.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=24"
