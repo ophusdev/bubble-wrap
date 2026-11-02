@@ -18,7 +18,7 @@ Nothing is saved yet: reloading the page starts over, sound setting included.
 
 ## Development
 
-Requires Node 24.
+Requires Node 24 or newer. CI and the Docker image use Node 26.
 
 ```sh
 npm install
